@@ -221,10 +221,25 @@ public final class Constants {
     }
 
     public static final class Swerve Constants {
+        // TO BE FILLED
+
         //Locations for the wheels of the Swerve Drive
         Translation2d m_frontLeftLocation = new Translation2d(0.0, 0.0);
         Translation2d m_frontRightLocation = new Translation2d(0.0, -0.0);
         Translation2d m_backLeftLocation = new Translation2d(-0.0, 0.0);
         Translation2d m_backRightLocation = new Translation2d(-0.0, -0.0);
+
+        //Location of the center of roation (center of robot)
+        Translation2d m_centerOfRotation = new Translation2d(0.0, 0.0);
+
+        //Measurments of the robot
+        public static final double kTrackWidth = Units.inchesToMeters(22.475);
+        public static final double kWheelbase = Units.inchesToMeters(22.475);
+        public static final double kChassisRadius = Math.hypot(
+                kTrackWidth / 2, kWheelbase / 2);
+
+        //Max speeds of wheels and turning
+        public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5);
+        public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
     }
 }   

@@ -1,7 +1,3 @@
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
-
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,8 +33,9 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
     // Back right module state
     SwerveModuleState backRight = moduleStates[3];
 
-    SwerveSubsystem () {
-        
+    public SwerveSubsystem () {
+        publisher = NetworkTableInstance.getDefault()
+        .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
     }
 
     ModuelAngleOptimization () {
@@ -63,5 +60,15 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
         // Now use this in our kinematics
         SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
     }
-}
 
+    @Override
+    public void periodic() {
+        // Periodically send a set of module states
+        publisher.set(new SwerveModuleState[] {
+          frontLeftState,
+          frontRightState,
+          backLeftState,
+          backRightState
+        });
+      }
+}
