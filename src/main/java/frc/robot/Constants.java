@@ -224,10 +224,10 @@ public final class Constants {
         // TO BE FILLED
 
         //Locations for the wheels of the Swerve Drive
-        Translation2d m_frontLeftLocation = new Translation2d(0.0, 0.0);
-        Translation2d m_frontRightLocation = new Translation2d(0.0, -0.0);
-        Translation2d m_backLeftLocation = new Translation2d(-0.0, 0.0);
-        Translation2d m_backRightLocation = new Translation2d(-0.0, -0.0);
+        //new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(12.5)), // Front Left
+        //new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(-12.5)), // Front Right
+        //new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(12.5)), // Back Left
+        //new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(-12.5))  // Back Right
 
         //Location of the center of roation (center of robot)
         Translation2d m_centerOfRotation = new Translation2d(0.0, 0.0);
@@ -241,5 +241,17 @@ public final class Constants {
         //Max speeds of wheels and turning
         public static final LinearVelocity kMaxSpeed = MetersPerSecond.of(5);
         public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
+
+        //Chassis Speeds Modes
+        public enum SwerveDirectories{
+            TEST_CHASSIS("---"),
+
+            public String directory;
+
+            private SwerveDirectories(String directory) {
+                this.directory = directory;
+            }
+        }
+
     }
 }   

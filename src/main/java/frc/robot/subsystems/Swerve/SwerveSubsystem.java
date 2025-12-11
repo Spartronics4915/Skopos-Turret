@@ -1,6 +1,7 @@
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.controller.ArmFeedforward;
@@ -19,27 +20,24 @@ import static frc.robot.Constants.HoodConstants.*;
 
 public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterface {
 
-    var speeds = new chassisSpeeds(vx, vy, omega);
-    ChassisSpeeds speeds = ChassisSpeeds.fromFieldRelativeSpeeds( vx, vy, omega, robot.angle);
-
-    SwerveSubsystem m_kinematics = new SwerveSubsystem(
-    m_frontLeftLocation, m_frontRightLocation, m_backLeftLocation, m_backRightLocation
-    );
-
-    // Convert to module states
-    SwerveModuleState[] moduleStates = kinematics.toSwerveModuleStates(speeds);
-    // Front left module state
-    SwerveModuleState frontLeft = moduleStates[0];
-    // Front right module state
-    SwerveModuleState frontRight = moduleStates[1];
-    // Back left module state
-    SwerveModuleState backLeft = moduleStates[2];
-    // Back right module state
-    SwerveModuleState backRight = moduleStates[3];
+    SwerveDriveKinematics kinematics;
 
     public SwerveSubsystem () {
-        publisher = NetworkTableInstance.getDefault()
-        .getStructArrayTopic("/SwerveStates", SwerveModuleState.struct).publish();
+        kinematics = new SwerveDriveKinematics(
+            new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(12.5)), // Front Left
+            new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(-12.5)), // Front Right
+            new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(12.5)), // Back Left
+            new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(-12.5))  // Back Right
+        );
+    }
+
+    public void drive() {
+        // Create test ChassisSpeeds going X = 14in, Y=4in, and spins at 30deg per second.
+        ChassisSpeeds testSpeeds = new ChassisSpeeds(Units.inchesToMeters(14), Units.inchesToMeters(4), Units.degreesToRadians(30));
+        
+        // Get the SwerveModuleStates for each module given the desired speeds.
+        SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(testSpeeds);
+        // Output order is Front-Left, Front-Right, Back-Left, Back-Right
     }
 
     ModuelAngleOptimization () {
