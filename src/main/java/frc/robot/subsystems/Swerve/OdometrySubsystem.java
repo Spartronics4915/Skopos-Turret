@@ -40,12 +40,12 @@ public class OdometrySubsystem extends SwerveSubsystem implements ModeSwitchInte
     @Override
     public void periodic () {
         // Get the rotation of the robot from the gyro.
-  var gyroAngle = m_gyro.getRotation2d();
-  // Update the pose
-  m_pose = m_odometry.update(gyroAngle,
-    new SwerveModulePosition[] {
-      m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
-      m_backLeftModule.getPosition(), m_backRightModule.getPosition()
-    });
+        var gyroAngle = m_gyro.getRotation2d();
+        // Update the pose
+         m_pose = m_odometry.update(gyroAngle,
+         new SwerveModulePosition[] {
+            m_frontLeftModule.getPosition(), m_frontRightModule.getPosition(),
+            m_backLeftModule.getPosition(), m_backRightModule.getPosition()
+        });
     }
 }
