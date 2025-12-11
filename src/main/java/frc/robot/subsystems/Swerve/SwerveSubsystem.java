@@ -35,6 +35,16 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
             swerveDrive::getRobotVelocity, 
             (speeds, FF) -> {shimPublisher.accept(speeds); drive(speeds);}, 
         };
+
+        gyro = new Gyroscope(); // Psuedo-constructor for generating gyroscope.
+
+        // Create the SwerveDriveOdometry given the current angle, the robot is at x=0, r=0, and heading=0
+        odometry = new SwerveDriveOdometry(
+            kinematics,
+            gyro.getAngle(), // returns current gyro reading as a Rotation2d
+            new SwerveModulePosition[]{new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition(), new SwerveModulePosition},
+            // Front-Left, Front-Right, Back-Left, Back-Right
+            new Pose2d(0,0,new Rotation2d()) // x=0, y=0, heading=0
     }
 
     public void drive() {
