@@ -25,6 +25,8 @@ import static frc.robot.Constants.HoodConstants.*;
 public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterface {
 
     SwerveDriveKinematics kinematics;
+    SwerveDriveOdometry odometry;
+    Gyroscope gyro; // Psuedo-class representing a gyroscope.
 
     public SwerveSubsystem () {
         AutoBuilder.configure(
