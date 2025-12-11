@@ -23,18 +23,15 @@ public class SwerveSubsystem extends SubsystemBase implements ModeSwitchInterfac
     SwerveDriveKinematics kinematics;
 
     public SwerveSubsystem () {
-        kinematics = new SwerveDriveKinematics(
-            new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(12.5)), // Front Left
-            new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(-12.5)), // Front Right
-            new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(12.5)), // Back Left
-            new Translation2d(Units.inchesToMeters(-12.5), Units.inchesToMeters(-12.5))  // Back Right
-        );
+        AutoBuilder.configure(
+            this::getPose, 
+            swerveDrive::resetOdometry, 
+            swerveDrive::getRobotVelocity, 
+            (speeds, FF) -> {shimPublisher.accept(speeds); drive(speeds);}, 
+        };
     }
 
     public void drive() {
-        // Create test ChassisSpeeds going X = 14in, Y=4in, and spins at 30deg per second.
-        ChassisSpeeds testSpeeds = new ChassisSpeeds(Units.inchesToMeters(14), Units.inchesToMeters(4), Units.degreesToRadians(30));
-        
         // Get the SwerveModuleStates for each module given the desired speeds.
         SwerveModuleState[] swerveModuleStates = kinematics.toSwerveModuleStates(testSpeeds);
         // Output order is Front-Left, Front-Right, Back-Left, Back-Right

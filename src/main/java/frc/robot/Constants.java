@@ -221,7 +221,7 @@ public final class Constants {
     }
 
     public static final class Swerve Constants {
-        // TO BE FILLED
+        // YET TO BE FINALIZED
 
         //Locations for the wheels of the Swerve Drive
         //new Translation2d(Units.inchesToMeters(12.5), Units.inchesToMeters(12.5)), // Front Left
@@ -243,15 +243,24 @@ public final class Constants {
         public static final AngularVelocity kMaxAngularSpeed = RadiansPerSecond.of(kMaxSpeed.in(MetersPerSecond) * Math.PI / kChassisRadius);
 
         //Chassis Speeds Modes
-        public enum SwerveDirectories{
-            TEST_CHASSIS("---"),
-
-            public String directory;
-
-            private SwerveDirectories(String directory) {
-                this.directory = directory;
+        public enum PathplannerConfigs {
+            TEST_CHASSIS(new RobotConfig( // FIXME replace constants with more accurate values
+                    Kilogram.of(0), 
+                    KilogramSquareMeters.of(0),
+                    new ModuleConfig(
+                        Inches.of(0/0),
+                        MetersPerSecond.of(0),
+                        0.00, //CHECKUP guess
+                        DCMotor.getNEO(0),
+                        0.00,
+                        Amps.of(0),
+                        0.00
+                    ),
+                    new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(0)), // Front Left
+                    new Translation2d(Units.inchesToMeters(0), Units.inchesToMeters(-0)), // Front Right
+                    new Translation2d(Units.inchesToMeters(-0), Units.inchesToMeters(0)), // Back Left
+                    new Translation2d(Units.inchesToMeters(-0), Units.inchesToMeters(-0))  // Back Right
             }
         }
-
     }
 }   
