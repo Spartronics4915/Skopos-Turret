@@ -1,0 +1,25 @@
+package frc.robot.commands;
+
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.subsystems.drive.SwerveSubsystem;
+import static frc.robot.subsystems.drive.SwerveSubsystem.*;
+
+public class DriveCommand extends Command {
+    private final SwerveSubsystem swerveSubsystem;
+    private final CommandXboxController driverController;
+
+    public DriveCommand(CommandXboxController driverController, SwerveSubsystem swerveSubsystem) {
+        this.swerveSubsystem = swerveSubsystem;
+        this.driverController = driverController;
+
+        addRequirements(swerveSubsystem);
+    }
+
+    @Override
+    public void execute() {
+        ChassisSpeeds chassisSpeeds = getSwerveTeleopCSSupplier(driverController.getHID(), swerveSubsystem).get();
+        swerveSubsystem.drive(chassisSpeeds);
+    }
+}

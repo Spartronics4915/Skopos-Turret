@@ -1,36 +1,28 @@
-// Copyright (c) FIRST and other WPILib contributors.
-// Open Source Software; you can modify and/or share it under the terms of
-// the WPILib BSD license file in the root directory of this project.
-
 package frc.robot;
 
+import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj2.command.Commands;
+import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import frc.robot.commands.DriveCommand;
+import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.HoodSubsystem;
 import frc.robot.subsystems.superstructure.IntakeSubsystem;
 import frc.robot.subsystems.superstructure.ShooterSubsystem;
 import frc.robot.subsystems.superstructure.TurretSubsystem;
 import frc.robot.utilities.ModeSwitchHandler;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+import static frc.robot.Constants.SwerveConstants.*;
 
-/**
- * This class is where the bulk of the robot should be declared. Since Command-based is a
- * "declarative" paradigm, very little robot logic should actually be handled in the {@link Robot}
- * periodic methods (other than the scheduler calls). Instead, the structure of the robot (including
- * subsystems, commands, and trigger mappings) should be declared here.
- */
 public class RobotContainer {
-    // The robot's subsystems and commands are defined here...
     private final HoodSubsystem hoodSubsystem = new HoodSubsystem();
     private final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     private final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     private final TurretSubsystem turretSubsystem = new TurretSubsystem();
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    
+    private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
+    public DriveCommand driveCommand = new DriveCommand(driverController, swerveSubsystem);
 
-    // Replace with CommandPS4Controller or CommandJoystick if needed
-
-    /** The container for the robot. Contains subsystems, OI devices, and commands. */
     public RobotContainer() {
-        // Configure the trigger bindings
         configureBindings();
 
         ModeSwitchHandler.EnableModeSwitchHandler(
@@ -41,29 +33,48 @@ public class RobotContainer {
         );
     }
 
-    /**
-     * Use this method to define your trigger->command mappings. Triggers can be created via the
-     * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-     * predicate, or via the named factories in {@link
-     * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-     * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-     * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-     * joysticks}.
-     */
     private void configureBindings() {
-        // Schedule `ExampleCommand` when `exampleCondition` changes to `true`
+        swerveSubsystem.setDefaultCommand(driveCommand);
 
-        // Schedule `exampleMethodCommand` when the Xbox controller's B button is pressed,
-        // cancelling on release.
-    }
+        ChassisSpeeds driverNudgeUp = new ChassisSpeeds(0.25, 0, 0);
+        ChassisSpeeds driverNudgeDown = new ChassisSpeeds(-0.25, 0, 0);
+        ChassisSpeeds driverNudgeLeft = new ChassisSpeeds(0, 0.25, 0);
+        ChassisSpeeds driverNudgeRight = new ChassisSpeeds(0, -0.25, 0);
 
-    /**
-     * Use this to pass the autonomous command to the main {@link Robot} class.
-     *
-     * @return the command to run in autonomous
-     */
-    public Command getAutonomousCommand() {
-        // An example command will be run in autonomous
-        return null;
+        driverController.povUp().whileTrue(
+            Commands.run(() -> {
+                swerveSubsystem.drive(driverNudgeUp);
+            })
+        );
+
+        driverController.povDown().whileTrue(
+            Commands.run(() -> {
+                swerveSubsystem.drive(driverNudgeDown);
+            })
+        );
+
+        driverController.povLeft().whileTrue(
+            Commands.run(() -> {
+                swerveSubsystem.drive(driverNudgeLeft);
+            })
+        );
+
+        driverController.povRight().whileTrue(
+            Commands.run(() -> {
+                swerveSubsystem.drive(driverNudgeRight);
+            })
+        );
+
+        driverController.b().onTrue(
+            Commands.runOnce(() -> {
+                IS_FIELD_RELATIVE = !IS_FIELD_RELATIVE;
+            })
+        );
+
+        driverController.a().onTrue(
+            Commands.runOnce(() -> {
+                TELEOP_HEADING_OFFSET = swerveSubsystem.getPose().getRotation();
+            })
+        );
     }
 }
