@@ -10,6 +10,8 @@ import edu.wpi.first.math.controller.ArmFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
+import edu.wpi.first.networktables.DoublePublisher;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -29,6 +31,8 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     private State currentState;
     private Rotation2d currentSetPoint = STARTING_ANGLE;
+
+    DoublePublisher turretPositionPublisher = NetworkTableInstance.getDefault().getDoubleTopic("turret_position").publish();
     
     public TurretSubsystem() {
         initializeMotor();
@@ -73,6 +77,8 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
         final PositionVoltage request = new PositionVoltage(currentState.position).withFeedForward(FFCalculator.calculate(currentState.position, currentState.velocity));
             motor.setControl(request);
+        
+        turretPositionPublisher.accept(getPosition().getDegrees());
     }
 
     //#endregion
