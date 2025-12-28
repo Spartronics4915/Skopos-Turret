@@ -8,10 +8,13 @@ import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 import static frc.robot.Constants.ShooterConstants.*;
+
+import frc.robot.Constants.ShooterConstants.ShooterState;
 import frc.robot.utilities.ModeSwitchHandler;
 import frc.robot.utilities.ModeSwitchHandler.ModeSwitchInterface;
 
@@ -19,8 +22,8 @@ public class ShooterSubsystem extends SubsystemBase implements ModeSwitchInterfa
     private TalonFX motor;
     private double currentSetPoint = STARTING_VELOCITY;
 
-    public DoublePublisher shooterVelocityPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Current_Pose").publish();
-    public DoublePublisher shooterDesiredVelocityPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Desired_Pose").publish();
+    public DoublePublisher shooterVelocityPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Shooter_Current_Velocity").publish();
+    public DoublePublisher shooterDesiredVelocityPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Shooter_Desired_Velocity").publish();
     
     public ShooterSubsystem() {
         motor = new TalonFX(SHOOTER_MOTOR_ID);
@@ -28,6 +31,11 @@ public class ShooterSubsystem extends SubsystemBase implements ModeSwitchInterfa
         motor.setNeutralMode(NeutralModeValue.Brake);
         setVelocity(STARTING_VELOCITY);
         ModeSwitchHandler.EnableModeSwitchHandler(this);
+        SmartDashboard.putData("ZOOM!", setSetpointCommand(80));
+        SmartDashboard.putData("ZIM!", setSetpointCommand(40));
+        SmartDashboard.putData("ZIN!", setSetpointCommand(20));
+        SmartDashboard.putData("ZOOOOOM!", setSetpointCommand(2));
+        SmartDashboard.putData("ZINKOL ZORP!", setSetpointCommand(0));
     }
 
     @Override
@@ -41,6 +49,8 @@ public class ShooterSubsystem extends SubsystemBase implements ModeSwitchInterfa
 
         final MotionMagicVelocityVoltage request = new MotionMagicVelocityVoltage(currentSetPoint);
         motor.setControl(request);
+        shooterVelocityPublisher.accept(getVelocity());
+        shooterDesiredVelocityPublisher.accept(getTargetVelocity());
     }
 
     public void resetMechanism(double... velocityOptional) {

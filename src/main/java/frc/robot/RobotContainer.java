@@ -6,6 +6,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.HoodSubsystem;
+import frc.robot.subsystems.superstructure.IntakeSubsystem;
+import frc.robot.subsystems.superstructure.ShooterSubsystem;
 import frc.robot.utilities.ModeSwitchHandler;
 import static frc.robot.Constants.SwerveConstants.*;
 
@@ -13,6 +15,8 @@ public class RobotContainer {
 
     public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
     public final HoodSubsystem hoodSubsystem = new HoodSubsystem();
+    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     public DriveCommand driveCommand = new DriveCommand(driverController, swerveSubsystem);
@@ -21,7 +25,9 @@ public class RobotContainer {
         configureBindings();
 
         ModeSwitchHandler.EnableModeSwitchHandler(
-            hoodSubsystem
+            hoodSubsystem,
+            shooterSubsystem,
+            intakeSubsystem
         );
     }
 

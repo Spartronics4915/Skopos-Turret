@@ -6,6 +6,12 @@ import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.revrobotics.spark.config.ClosedLoopConfig;
+import com.revrobotics.spark.config.ClosedLoopConfig.FeedbackSensor;
+import com.revrobotics.spark.config.EncoderConfig;
+import com.revrobotics.spark.config.SparkBaseConfig;
+import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
+import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
@@ -54,35 +60,70 @@ public final class Constants {
     public static final class ShooterConstants {
         public static final int SHOOTER_MOTOR_ID = 14;
         public static final double MIN_VELOCITY = 0;
-        public static final double MAX_VELOCITY = 5000;
+        public static final double MAX_VELOCITY = 100;
         public static final double STARTING_VELOCITY = 0;
         
         public static final TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
 
         static {
             Slot0Configs slot0Configs = motorConfiguration.Slot0;
-                slot0Configs.kS = 0.25;
+                slot0Configs.kS = 0;
                 slot0Configs.kV = 0.12;
-                slot0Configs.kA = 0.01;
-                slot0Configs.kP = 50;
-                slot0Configs.kI = 0.05;
-                slot0Configs.kD = 0.15;
+                slot0Configs.kA = 0;
+                slot0Configs.kP = 0.25;
+                slot0Configs.kI = 0;
+                slot0Configs.kD = 0.01;
 
             MotionMagicConfigs motionMagicConfigs = motorConfiguration.MotionMagic;
-                motionMagicConfigs.MotionMagicAcceleration = 400;
-                motionMagicConfigs.MotionMagicJerk = 4000;
+                motionMagicConfigs.MotionMagicAcceleration = 200;
+                motionMagicConfigs.MotionMagicJerk = 800;
             
             FeedbackConfigs feedbackConfigs = motorConfiguration.Feedback;
                 feedbackConfigs.SensorToMechanismRatio = 0;
         }
 
         public enum ShooterState {
-            PLACE_HOLDER(100);
+            PLACE_HOLDER(0);
 
             public double rpm;
 
             private ShooterState(double rpm) {
                 this.rpm = rpm;
+            }
+        }
+    }
+
+    public static final class IntakeConstants {
+        public static final int INTAKE_MOTOR_ID = 22;
+
+        public static final int SMART_CURRENT_LIMIT = 0;
+        public static final int SECONDARY_CURRENT_LIMIT = 40;
+
+        public static final double OPEN_LOOP_RAMP_RATE = 0.1;
+
+        public static final EncoderConfig encoderConfig = new EncoderConfig()
+            .velocityConversionFactor(0);
+
+        public static final ClosedLoopConfig closedLoopConfig = new ClosedLoopConfig()
+            .feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+            .pid(0.0001, 0, 0.0);
+
+        public static final SparkBaseConfig motorConfig = new SparkMaxConfig()
+            .inverted(false)
+            .idleMode(IdleMode.kBrake)
+            .apply(closedLoopConfig)
+            .apply(encoderConfig)
+            .openLoopRampRate(OPEN_LOOP_RAMP_RATE)
+            .smartCurrentLimit(SMART_CURRENT_LIMIT)
+            .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT);
+
+        public enum IntakeSpeed {
+            PLACE_HOLDER(0);
+
+            public final double intakeSpeed;
+            
+            private IntakeSpeed(double intakeSpeed) {
+                this.intakeSpeed = intakeSpeed;
             }
         }
     }
