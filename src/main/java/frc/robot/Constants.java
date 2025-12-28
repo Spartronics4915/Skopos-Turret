@@ -51,6 +51,42 @@ public final class Constants {
         }
     }
 
+    public static final class ShooterConstants {
+        public static final int SHOOTER_MOTOR_ID = 14;
+        public static final double MIN_VELOCITY = 0;
+        public static final double MAX_VELOCITY = 5000;
+        public static final double STARTING_VELOCITY = 0;
+        
+        public static final TalonFXConfiguration motorConfiguration = new TalonFXConfiguration();
+
+        static {
+            Slot0Configs slot0Configs = motorConfiguration.Slot0;
+                slot0Configs.kS = 0.25;
+                slot0Configs.kV = 0.12;
+                slot0Configs.kA = 0.01;
+                slot0Configs.kP = 50;
+                slot0Configs.kI = 0.05;
+                slot0Configs.kD = 0.15;
+
+            MotionMagicConfigs motionMagicConfigs = motorConfiguration.MotionMagic;
+                motionMagicConfigs.MotionMagicAcceleration = 400;
+                motionMagicConfigs.MotionMagicJerk = 4000;
+            
+            FeedbackConfigs feedbackConfigs = motorConfiguration.Feedback;
+                feedbackConfigs.SensorToMechanismRatio = 0;
+        }
+
+        public enum ShooterState {
+            PLACE_HOLDER(100);
+
+            public double rpm;
+
+            private ShooterState(double rpm) {
+                this.rpm = rpm;
+            }
+        }
+    }
+
     public static final class SwerveConstants {
         public static final double TRACK_WIDTH = 22.475 / 12;
         public static final double WHEEL_BASE = 22.475 / 12;

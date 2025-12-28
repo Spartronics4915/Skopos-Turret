@@ -26,8 +26,6 @@ public class HoodSubsystem extends SubsystemBase implements ModeSwitchInterface 
 
     public DoublePublisher hoodPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Current_Pose").publish();
     public DoublePublisher hoodDesiredPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Desired_Pose").publish();
-    public DoublePublisher hoodDesiredStatePosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Desired_State_Pose").publish();
-
     public HoodSubsystem() {
         motor = new TalonFX(HOOD_MOTOR_ID);
         motor.getConfigurator().apply(motorConfiguration);
