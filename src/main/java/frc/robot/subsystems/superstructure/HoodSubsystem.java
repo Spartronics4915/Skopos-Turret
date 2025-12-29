@@ -34,7 +34,7 @@ public class HoodSubsystem extends SubsystemBase implements ModeSwitchInterface 
         setMechanismAngle(STARTING_ANGLE);
         ModeSwitchHandler.EnableModeSwitchHandler(this);
 
-        SmartDashboard.putData("BOOM!", setSetpointCommand(Rotation2d.fromDegrees(90)));
+        SmartDashboard.putData("BOOM!", setSetpointCommand(Rotation2d.fromDegrees(140)));
         SmartDashboard.putData("SPLAT!", setSetpointCommand(Rotation2d.fromDegrees(0)));
         SmartDashboard.putData("POW!", setSetpointCommand(Rotation2d.fromDegrees(300)));
     }
