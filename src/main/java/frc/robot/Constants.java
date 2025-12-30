@@ -14,6 +14,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
 
@@ -125,6 +126,32 @@ public final class Constants {
             private IntakeSpeed(double intakeSpeed) {
                 this.intakeSpeed = intakeSpeed;
             }
+        }
+    }
+
+    public static final class TurretConstants {
+        public static final double dt = 0.02;
+
+        public static final int TURRET_MOTOR_ID = 23;
+        public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-180);
+        public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(180);
+
+        public static final Constraints constraints = new Constraints(10, 10);
+
+        public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
+
+        static {
+            motorConfig
+                .inverted(false)
+                .idleMode(IdleMode.kBrake)
+                .smartCurrentLimit(35)
+                .secondaryCurrentLimit(40);
+            motorConfig.encoder
+                .positionConversionFactor(135.0/7616.0)
+                .velocityConversionFactor(135.0/7616.0);
+            motorConfig
+                .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
+                .pid(1, 0, 0); 
         }
     }
 
