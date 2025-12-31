@@ -71,6 +71,6 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     @Override
     public void onModeSwitch() {
-        intakeMotors(IntakeSpeed.PLACE_HOLDER);
+        intakeMotors(IntakeSpeed.STOP);
     }
 }

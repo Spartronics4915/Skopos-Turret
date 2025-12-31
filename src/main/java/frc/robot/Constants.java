@@ -119,7 +119,9 @@ public final class Constants {
             .secondaryCurrentLimit(SECONDARY_CURRENT_LIMIT);
 
         public enum IntakeSpeed {
-            PLACE_HOLDER(0);
+            STOP(0),
+            SLOW(1),
+            SHOOT(3);
 
             public final double intakeSpeed;
             
