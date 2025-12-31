@@ -59,7 +59,7 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
         );
 
         currentState = trapezoidProfile.calculate(TurretConstants.dt, currentState, new State(currentSetPoint.getDegrees(), 0));
-        turretClosedLoopController.setReference(currentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
+        turretClosedLoopController.setSetpoint(currentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
         turretPosePublisher.accept(getPosition().getDegrees());
         turretDesiredPosePublisher.accept(currentState.position);
