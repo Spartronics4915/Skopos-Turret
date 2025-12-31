@@ -34,6 +34,10 @@ public class RobotContainer {
         );
     }
 
+    private double applyResponseCurve(double x) {
+        return Math.signum(x) * Math.pow(x, 2);
+    }
+
     private void configureBindings() {
         swerveSubsystem.setDefaultCommand(driveCommand);
 
@@ -41,6 +45,8 @@ public class RobotContainer {
         ChassisSpeeds driverNudgeDown = new ChassisSpeeds(-0.25, 0, 0);
         ChassisSpeeds driverNudgeLeft = new ChassisSpeeds(0, 0.25, 0);
         ChassisSpeeds driverNudgeRight = new ChassisSpeeds(0, -0.25, 0);
+
+        //#region Driver Controller Bindings
 
         driverController.povUp().whileTrue(
             Commands.run(() -> {
