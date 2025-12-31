@@ -45,7 +45,7 @@ public class IntakeSubsystem extends SubsystemBase implements ModeSwitchInterfac
         intakeDesiredVelocityPublisher.accept(setpoint);
     }
 
-    private void setSpeed(double newSpeed) {
+    public void setSpeed(double newSpeed) {
         closedLoopController.setReference(
             newSpeed,
             ControlType.kVelocity
