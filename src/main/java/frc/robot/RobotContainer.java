@@ -18,6 +18,7 @@ public class RobotContainer {
     public final HoodSubsystem hoodSubsystem = new HoodSubsystem();
     public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    public final TurretSubsystem turretSubsystem = new TurretSubsystem();
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
