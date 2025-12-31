@@ -83,5 +83,60 @@ public class RobotContainer {
 
             })
         );
+
+        //#endregion
+
+        //#region Operator Controller Bindings
+
+        operatorController.povUp().whileTrue(
+            Commands.run(() ->
+                hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(-HOOD_STEP))
+            )
+        );
+
+        operatorController.povDown().whileTrue(
+            Commands.run(() ->
+                hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(HOOD_STEP))
+            )
+        );
+
+        operatorController.povLeft().whileTrue(
+            Commands.run(() ->
+                turretSubsystem.incrementAngle(Rotation2d.fromDegrees(-TURRET_STEP))
+            )
+        );
+
+        operatorController.povRight().whileTrue(
+            Commands.run(() ->
+                turretSubsystem.incrementAngle(Rotation2d.fromDegrees(TURRET_STEP))
+            )
+        );
+
+        operatorController.leftTrigger(0.01).whileTrue(
+            Commands.run(() -> {
+                double triggerRaw = operatorController.getLeftTriggerAxis();
+                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+                intakeSubsystem.setSpeed(trigger * 10);
+            }).finallyDo(
+                () -> intakeSubsystem.setSpeed(0)
+            )
+        );
+
+        operatorController.rightTrigger(0.01).whileTrue(
+            Commands.run(() -> {
+                double triggerRaw = operatorController.getRightTriggerAxis();
+                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+                shooterSubsystem.setSetpoint(trigger * 80);
+            }).finallyDo(
+                () -> shooterSubsystem.setSetpoint(0)
+            )
+        );
+
+        //#endregion
+
+        SmartDashboard.putData("Reset Dynamics", Commands.sequence(
+            hoodSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0)),
+            turretSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0))
+        ));
     }
 }

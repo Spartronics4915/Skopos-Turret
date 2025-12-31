@@ -175,6 +175,11 @@ public final class Constants {
         public static boolean IS_FIELD_RELATIVE = false;
 
         public static final double STICK_DEADBAND = 0.1;
+        public static final double TRIGGER_DEADBAND = 0.1;
+
+        public static final double HOOD_STEP = 7.5;
+        public static final double TURRET_STEP = 0.5;
+    }
 
     }
 }   
