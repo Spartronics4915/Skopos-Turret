@@ -140,7 +140,7 @@ public final class Constants {
         public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-270);
         public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(180);
 
-        public static final Constraints constraints = new Constraints(200, 50);
+        public static final Constraints constraints = new Constraints(700, 700);
 
         public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
@@ -155,7 +155,7 @@ public final class Constants {
                 .velocityConversionFactor(135.0/7616.0 * 360);
             motorConfig
                 .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(0.1, 0, 0); 
+                .pid(0.15, 0, 0); 
         }
     }
 
@@ -180,7 +180,7 @@ public final class Constants {
         public static final double TRIGGER_DEADBAND = 0.1;
 
         public static final double HOOD_STEP = 7.5;
-        public static final double TURRET_STEP = 0.5;
+        public static final double TURRET_STEP = 1;
     }
 
     public static final class SuperstructureConstants {
