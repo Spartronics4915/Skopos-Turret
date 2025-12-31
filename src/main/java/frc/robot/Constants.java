@@ -163,12 +163,16 @@ public final class Constants {
         public static final double MAX_SPEED = Units.feetToMeters(24);
         public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(MAX_SPEED * Math.PI / CHASSIS_RADIUS);
 
+        public static Rotation2d TELEOP_HEADING_OFFSET = Rotation2d.fromDegrees(0.0);
+    }
+
+    public static final class IO {
+        public static final int DRIVE_CONTROLLER_PORT = 0;
+        public static final int OPERATOR_CONTROLLER_PORT = 1;
+
         public static boolean IS_FIELD_RELATIVE = false;
 
         public static final double STICK_DEADBAND = 0.1;
 
-        public static Rotation2d TELEOP_HEADING_OFFSET = Rotation2d.fromDegrees(0.0);
-
-        public static final int DRIVE_CONTROLLER_PORT = 0;
     }
 }   
