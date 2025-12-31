@@ -33,17 +33,17 @@ public final class Constants {
 
         static {
             Slot0Configs slot0Configs = motorConfiguration.Slot0;
-                slot0Configs.kS = 0.25;
-                slot0Configs.kV = 0.12;
+                slot0Configs.kS = 0;
+                slot0Configs.kV = 0.02;
                 slot0Configs.kA = 0.01;
                 slot0Configs.kP = 50;
-                slot0Configs.kI = 0.05;
+                slot0Configs.kI = 0;
                 slot0Configs.kD = 0.15;
 
             MotionMagicConfigs motionMagicConfigs = motorConfiguration.MotionMagic;
-                motionMagicConfigs.MotionMagicCruiseVelocity = 3.5;
-                motionMagicConfigs.MotionMagicExpo_kV = 0.15;
-                motionMagicConfigs.MotionMagicExpo_kA = 0.1;
+                motionMagicConfigs.MotionMagicCruiseVelocity = 3;
+                motionMagicConfigs.MotionMagicExpo_kV = 0.05;
+                motionMagicConfigs.MotionMagicExpo_kA = 0.01;
             
             FeedbackConfigs feedbackConfigs = motorConfiguration.Feedback;
                 feedbackConfigs.SensorToMechanismRatio = 2.4936523444;
@@ -73,7 +73,7 @@ public final class Constants {
                 slot0Configs.kS = 0;
                 slot0Configs.kV = 0.12;
                 slot0Configs.kA = 0;
-                slot0Configs.kP = 0.25;
+                slot0Configs.kP = 0.15;
                 slot0Configs.kI = 0;
                 slot0Configs.kD = 0.01;
 
