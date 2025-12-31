@@ -134,11 +134,11 @@ public final class Constants {
     public static final class TurretConstants {
         public static final double dt = 0.02;
 
-        public static final int TURRET_MOTOR_ID = 23;
-        public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-180);
+        public static final int TURRET_MOTOR_ID = 21;
+        public static final Rotation2d MIN_ANGLE = Rotation2d.fromDegrees(-270);
         public static final Rotation2d MAX_ANGLE = Rotation2d.fromDegrees(180);
 
-        public static final Constraints constraints = new Constraints(10, 10);
+        public static final Constraints constraints = new Constraints(200, 50);
 
         public static final SparkMaxConfig motorConfig = new SparkMaxConfig();
 
@@ -149,11 +149,11 @@ public final class Constants {
                 .smartCurrentLimit(35)
                 .secondaryCurrentLimit(40);
             motorConfig.encoder
-                .positionConversionFactor(135.0/7616.0)
-                .velocityConversionFactor(135.0/7616.0);
+                .positionConversionFactor(135.0/7616.0 * 360)
+                .velocityConversionFactor(135.0/7616.0 * 360);
             motorConfig
                 .closedLoop.feedbackSensor(FeedbackSensor.kPrimaryEncoder)
-                .pid(1, 0, 0); 
+                .pid(0.1, 0, 0); 
         }
     }
 
