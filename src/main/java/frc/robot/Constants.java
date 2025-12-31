@@ -1,5 +1,6 @@
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
 import com.ctre.phoenix6.configs.FeedbackConfigs;
@@ -17,6 +18,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
 
 public final class Constants {
 
@@ -181,5 +183,10 @@ public final class Constants {
         public static final double TURRET_STEP = 0.5;
     }
 
+    public static final class SuperstructureConstants {
+        public static final int INTAKE_LC_ID = 26;
+        public static final Distance INTAKE_LC_TRIGGER_DISTANCE = Meters.of(0.109);
+        public static final double INTAKE_LC_DEBOUNCE = 0.03;
+        public static final double INTAKE_TIMEOUT = 3;
     }
 }   

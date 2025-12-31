@@ -1,6 +1,9 @@
 package frc.robot;
 
+import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommand;
@@ -8,6 +11,7 @@ import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.superstructure.HoodSubsystem;
 import frc.robot.subsystems.superstructure.IntakeSubsystem;
 import frc.robot.subsystems.superstructure.ShooterSubsystem;
+import frc.robot.subsystems.superstructure.TurretSubsystem;
 import frc.robot.utilities.ModeSwitchHandler;
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IO.*;
@@ -19,6 +23,7 @@ public class RobotContainer {
     public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final TurretSubsystem turretSubsystem = new TurretSubsystem();
+    public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
@@ -136,6 +141,10 @@ public class RobotContainer {
             }).finallyDo(
                 () -> shooterSubsystem.setSetpoint(0)
             )
+        );
+
+        operatorController.leftBumper().onTrue(
+            superstructure.intake()
         );
 
         //#endregion
