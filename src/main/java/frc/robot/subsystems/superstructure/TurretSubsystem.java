@@ -70,6 +70,7 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
     public void resetMechanism(Rotation2d... angleOptional) {
         Rotation2d angle = (angleOptional.length > 0) ? angleOptional[0] : getPosition();
         currentSetPoint = angle;
+        currentState = new State(angle.getDegrees(), 0);
     }
 
     public Rotation2d getPosition() {
