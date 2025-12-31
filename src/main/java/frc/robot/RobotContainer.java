@@ -12,6 +12,7 @@ import frc.robot.subsystems.superstructure.HoodSubsystem;
 import frc.robot.subsystems.superstructure.IntakeSubsystem;
 import frc.robot.subsystems.superstructure.ShooterSubsystem;
 import frc.robot.subsystems.superstructure.TurretSubsystem;
+import frc.robot.subsystems.vision.VisionSubsystem;
 import frc.robot.utilities.ModeSwitchHandler;
 import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IO.*;
@@ -24,6 +25,7 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final TurretSubsystem turretSubsystem = new TurretSubsystem();
     public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
+    public final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem.swerveDrive::addVisionMeasurement);
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
