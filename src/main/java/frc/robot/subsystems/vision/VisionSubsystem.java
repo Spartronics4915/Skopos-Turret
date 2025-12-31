@@ -19,6 +19,8 @@ import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.networktables.NetworkTableInstance;
+import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import static frc.robot.Constants.VisionConstants.*;
 
@@ -29,7 +31,10 @@ public class VisionSubsystem extends SubsystemBase {
     private List<PhotonPipelineResult> results;
     private Optional<EstimatedRobotPose> currentResultPose;
     private Matrix<N3, N1> currentStdDevs;
+    private Pose2d visionPose2d;
     private final EstimateConsumer estimateConsumer;
+
+    public StructPublisher<Pose2d> visionPoseEstimatorStructPublisher = NetworkTableInstance.getDefault().getStructTopic("Current Vision Pose", Pose2d.struct).publish();
 
     public VisionSubsystem(EstimateConsumer estimateConsumer) {
         this.estimateConsumer = estimateConsumer;
@@ -48,12 +53,17 @@ public class VisionSubsystem extends SubsystemBase {
             currentResultPose = estimator.update(currentResult);
             updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
             currentResultPose.ifPresent(
-                est -> {
-                    var estStdDevs = getEstimationStdDevs();
-                    estimateConsumer.accept(est.estimatedPose.toPose2d(), est.timestampSeconds, estStdDevs);
+                estimate -> {
+                    Matrix<N3, N1> estimationStdDevs = getEstimationStdDevs();
+                    visionPose2d = estimate.estimatedPose.toPose2d();
+                    estimateConsumer.accept(
+                        visionPose2d, 
+                        estimate.timestampSeconds, estimationStdDevs
+                    );
                 }
             );
         }
+        visionPoseEstimatorStructPublisher.accept(visionPose2d);
     }
 
     private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
@@ -87,7 +97,7 @@ public class VisionSubsystem extends SubsystemBase {
         return currentStdDevs;
     }
 
-    public Pose3d getPose3d(EstimatedRobotPose estimatedRobotPose) {
+    public Pose3d getPose2d(EstimatedRobotPose estimatedRobotPose) {
         return estimatedRobotPose.estimatedPose;
     }
 
