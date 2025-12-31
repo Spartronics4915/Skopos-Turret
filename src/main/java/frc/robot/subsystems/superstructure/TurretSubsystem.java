@@ -1,11 +1,11 @@
 package frc.robot.subsystems.superstructure;
 
-import com.ctre.phoenix6.controls.MotionMagicExpoVoltage;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.spark.SparkMax;
 import com.revrobotics.RelativeEncoder;
 import com.revrobotics.spark.ClosedLoopSlot;
 import com.revrobotics.spark.SparkBase.ControlType;
+import com.revrobotics.spark.SparkBase.PersistMode;
+import com.revrobotics.spark.SparkBase.ResetMode;
 import com.revrobotics.spark.SparkClosedLoopController;
 import com.revrobotics.spark.SparkLowLevel.MotorType;
 
@@ -44,19 +44,20 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
         setMechanismAngle(Rotation2d.fromDegrees(0));
         ModeSwitchHandler.EnableModeSwitchHandler(this);
+        motor.configure(TurretConstants.motorConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
     }
 
     @Override
     public void periodic() {
-        currentSetPoint = Rotation2d.fromRotations(
+        currentSetPoint = Rotation2d.fromDegrees(
             MathUtil.clamp(
-                currentSetPoint.getRotations(),
-                TurretConstants.MIN_ANGLE.getRotations(),
-                TurretConstants.MAX_ANGLE.getRotations()
+                currentSetPoint.getDegrees(),
+                TurretConstants.MIN_ANGLE.getDegrees(),
+                TurretConstants.MAX_ANGLE.getDegrees()
             )
         );
 
-        currentState = trapezoidProfile.calculate(TurretConstants.dt, currentState, new State(currentSetPoint.getRotations(), 0));
+        currentState = trapezoidProfile.calculate(TurretConstants.dt, currentState, new State(currentSetPoint.getDegrees(), 0));
         turretClosedLoopController.setReference(currentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
         turretPosePublisher.accept(getPosition().getDegrees());
@@ -69,7 +70,7 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
     }
 
     public Rotation2d getPosition() {
-        return Rotation2d.fromRotations(motorEncoder.getPosition());
+        return Rotation2d.fromDegrees(motorEncoder.getPosition());
     }
 
     public Rotation2d getTargetPosition(){
@@ -77,7 +78,7 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
     }
 
     private void setMechanismAngle(Rotation2d angle){
-        motorEncoder.setPosition(angle.getRotations());
+        motorEncoder.setPosition(angle.getDegrees());
         resetMechanism(angle);
     }
 
