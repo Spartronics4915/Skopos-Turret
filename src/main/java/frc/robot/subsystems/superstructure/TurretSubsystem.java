@@ -16,7 +16,6 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.networktables.DoublePublisher;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.RobotBase;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.HoodConstants.HoodState;
@@ -34,6 +33,8 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
 
     public DoublePublisher turretPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Turret Current Pose").publish();
     public DoublePublisher turretDesiredPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Turret Desired Pose").publish();
+    public DoublePublisher turretSetPointPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Turret SetPoint").publish();
+    public DoublePublisher turretAppliedOutPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Turret Applied Output").publish();
     
     public TurretSubsystem() {
         motor = new SparkMax(TurretConstants.TURRET_MOTOR_ID, MotorType.kBrushless);
@@ -61,7 +62,9 @@ public class TurretSubsystem extends SubsystemBase implements ModeSwitchInterfac
         turretClosedLoopController.setReference(currentState.position, ControlType.kPosition, ClosedLoopSlot.kSlot0);
 
         turretPosePublisher.accept(getPosition().getDegrees());
-        turretDesiredPosePublisher.accept(getTargetPosition().getDegrees());
+        turretDesiredPosePublisher.accept(currentState.position);
+        turretSetPointPublisher.accept(currentSetPoint.getDegrees());
+        turretAppliedOutPublisher.accept(motor.getAppliedOutput());
     }
 
     public void resetMechanism(Rotation2d... angleOptional) {

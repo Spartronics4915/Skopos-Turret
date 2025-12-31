@@ -26,6 +26,8 @@ public class HoodSubsystem extends SubsystemBase implements ModeSwitchInterface 
 
     public DoublePublisher hoodPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Current_Pose").publish();
     public DoublePublisher hoodDesiredPosePublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood_Desired_Pose").publish();
+    public DoublePublisher hoodSetPointPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood SetPoint").publish();
+    public DoublePublisher hoodAppliedOutPublisher = NetworkTableInstance.getDefault().getDoubleTopic("Hood Applied Output").publish();
     
     public HoodSubsystem() {
         motor = new TalonFX(HOOD_MOTOR_ID);
@@ -53,6 +55,8 @@ public class HoodSubsystem extends SubsystemBase implements ModeSwitchInterface 
         motor.setControl(request);
         hoodPosePublisher.accept(getPosition().getDegrees());
         hoodDesiredPosePublisher.accept(getTargetPosition().getDegrees());
+        hoodSetPointPublisher.accept(currentSetPoint.getDegrees());
+        hoodAppliedOutPublisher.accept(motor.getDutyCycle().getValueAsDouble());
     }
 
     public void resetMechanism(Rotation2d... angleOptional) {
