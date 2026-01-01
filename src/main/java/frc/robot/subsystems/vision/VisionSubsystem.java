@@ -42,21 +42,26 @@ public class VisionSubsystem extends SubsystemBase {
             PNP_DISTANCE_TRIG_SOLVE, 
             ROBOT_TO_CAMERA
         );
+        System.out.println("Camera and Estimator loaded");
     }
 
     @Override
     public void periodic() {
-        results = camera.getAllUnreadResults();
-        for (PhotonPipelineResult currentResult : results) {
-            currentResultPose = estimator.update(currentResult);
-            updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
-            currentResultPose.ifPresent(
-                estimate -> {
-                    visionPose2d = estimate.estimatedPose.toPose2d();
-                }
-            );
+        if (!camera.getAllUnreadResults().isEmpty()) {
+            results = camera.getAllUnreadResults();
+            for (PhotonPipelineResult currentResult : results) {
+                currentResultPose = estimator.update(currentResult);
+                System.out.println("Pose Acquired");
+                updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
+                System.out.println("Standard Deviations Updated");
+                currentResultPose.ifPresent(
+                    estimate -> {
+                        visionPose2d = estimate.estimatedPose.toPose2d();
+                    }
+                );
+            }
+            visionPosePublisher.accept(visionPose2d);
         }
-        visionPosePublisher.accept(visionPose2d);
     }
 
     private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
