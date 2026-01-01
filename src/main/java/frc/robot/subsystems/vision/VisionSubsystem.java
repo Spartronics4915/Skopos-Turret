@@ -55,14 +55,15 @@ public class VisionSubsystem extends SubsystemBase {
             currentResultPose.ifPresent(
                 estimate -> {
                     Matrix<N3, N1> estimationStdDevs = getEstimationStdDevs();
-                    visionPose2d = estimate.estimatedPose.toPose2d();
+                    estimate.estimatedPose.toPose2d();
                     estimateConsumer.accept(
-                        visionPose2d, 
+                        estimate.estimatedPose.toPose2d(), 
                         estimate.timestampSeconds, estimationStdDevs
                     );
                 }
             );
         }
+        visionPose2d = currentResultPose.get().estimatedPose.toPose2d();
         visionPoseEstimatorStructPublisher.accept(visionPose2d);
     }
 
