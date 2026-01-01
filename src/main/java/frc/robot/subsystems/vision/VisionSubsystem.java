@@ -32,12 +32,10 @@ public class VisionSubsystem extends SubsystemBase {
     private Optional<EstimatedRobotPose> currentResultPose;
     private Matrix<N3, N1> currentStdDevs;
     private Pose2d visionPose2d;
-    private final EstimateConsumer estimateConsumer;
 
-    public StructPublisher<Pose2d> visionPoseEstimatorStructPublisher = NetworkTableInstance.getDefault().getStructTopic("Current Vision Pose", Pose2d.struct).publish();
+    StructPublisher<Pose2d> visionPosePublisher = NetworkTableInstance.getDefault().getStructTopic("VisionPose", Pose2d.struct).publish();
 
-    public VisionSubsystem(EstimateConsumer estimateConsumer) {
-        this.estimateConsumer = estimateConsumer;
+    public VisionSubsystem() {
         camera = new PhotonCamera("daniil");
         estimator = new PhotonPoseEstimator(
             AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo), 
@@ -54,19 +52,11 @@ public class VisionSubsystem extends SubsystemBase {
             updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
             currentResultPose.ifPresent(
                 estimate -> {
-                    Matrix<N3, N1> estimationStdDevs = getEstimationStdDevs();
-                    estimate.estimatedPose.toPose2d();
-                    estimateConsumer.accept(
-                        estimate.estimatedPose.toPose2d(), 
-                        estimate.timestampSeconds, estimationStdDevs
-                    );
+                    visionPose2d = estimate.estimatedPose.toPose2d();
                 }
             );
         }
-        if (currentResultPose.isPresent()) {
-            visionPose2d = currentResultPose.get().estimatedPose.toPose2d();
-        }
-        visionPoseEstimatorStructPublisher.accept(visionPose2d);
+        visionPosePublisher.accept(visionPose2d);
     }
 
     private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
@@ -102,10 +92,5 @@ public class VisionSubsystem extends SubsystemBase {
 
     public Pose3d getPose2d(EstimatedRobotPose estimatedRobotPose) {
         return estimatedRobotPose.estimatedPose;
-    }
-
-    @FunctionalInterface
-    public static interface EstimateConsumer {
-        public void accept(Pose2d pose, double timestamp, Matrix<N3, N1> estimationStdDevs);
     }
 }

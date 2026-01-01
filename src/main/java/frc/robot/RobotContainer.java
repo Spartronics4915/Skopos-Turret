@@ -25,7 +25,7 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final TurretSubsystem turretSubsystem = new TurretSubsystem();
     public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
-    public final VisionSubsystem visionSubsystem = new VisionSubsystem(swerveSubsystem.swerveDrive::addVisionMeasurement);
+    public final VisionSubsystem visionSubsystem = new VisionSubsystem();
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
