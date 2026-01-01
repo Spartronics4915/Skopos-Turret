@@ -15,7 +15,6 @@ import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.numbers.N1;
 import edu.wpi.first.math.numbers.N3;
@@ -39,25 +38,25 @@ public class VisionSubsystem extends SubsystemBase {
         camera = new PhotonCamera("daniil");
         estimator = new PhotonPoseEstimator(
             AprilTagFieldLayout.loadField(AprilTagFields.k2024Crescendo), 
-            PNP_DISTANCE_TRIG_SOLVE, 
+            LOWEST_AMBIGUITY, 
             ROBOT_TO_CAMERA
         );
     }
 
     @Override
     public void periodic() {
-            results = camera.getAllUnreadResults();
-            for (PhotonPipelineResult currentResult : results) {
-                if (currentResult.hasTargets()) {
-                    currentResultPose = estimator.update(currentResult);
-                    updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
-                    if (currentResultPose.isPresent()) {
-                        visionPose = currentResultPose.get().estimatedPose;
-                        System.out.println("Pose was set");
-                    }
-                    visionPosePublisher.accept(visionPose);
+        results = camera.getAllUnreadResults();
+        for (PhotonPipelineResult currentResult : results) {
+            if (currentResult.hasTargets()) {
+                currentResultPose = estimator.update(currentResult);
+                updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
+                if (currentResultPose.isPresent()) {
+                    visionPose = currentResultPose.get().estimatedPose;
+                    System.out.println("Pose was set");
                 }
+                visionPosePublisher.accept(visionPose);
             }
+        }
     }
 
     private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
