@@ -63,7 +63,9 @@ public class VisionSubsystem extends SubsystemBase {
                 }
             );
         }
-        visionPose2d = currentResultPose.get().estimatedPose.toPose2d();
+        if (currentResultPose.isPresent()) {
+            visionPose2d = currentResultPose.get().estimatedPose.toPose2d();
+        }
         visionPoseEstimatorStructPublisher.accept(visionPose2d);
     }
 
