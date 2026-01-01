@@ -31,9 +31,9 @@ public class VisionSubsystem extends SubsystemBase {
     private List<PhotonPipelineResult> results;
     private Optional<EstimatedRobotPose> currentResultPose;
     private Matrix<N3, N1> currentStdDevs;
-    private Pose2d visionPose2d;
+    private Pose3d visionPose;
 
-    StructPublisher<Pose2d> visionPosePublisher = NetworkTableInstance.getDefault().getStructTopic("VisionPose", Pose2d.struct).publish();
+    StructPublisher<Pose3d> visionPosePublisher = NetworkTableInstance.getDefault().getStructTopic("VisionPose", Pose3d.struct).publish();
 
     public VisionSubsystem() {
         camera = new PhotonCamera("daniil");
@@ -42,7 +42,6 @@ public class VisionSubsystem extends SubsystemBase {
             PNP_DISTANCE_TRIG_SOLVE, 
             ROBOT_TO_CAMERA
         );
-        System.out.println("Camera and Estimator loaded");
     }
 
     @Override
@@ -51,16 +50,13 @@ public class VisionSubsystem extends SubsystemBase {
             results = camera.getAllUnreadResults();
             for (PhotonPipelineResult currentResult : results) {
                 currentResultPose = estimator.update(currentResult);
-                System.out.println("Pose Acquired");
                 updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
-                System.out.println("Standard Deviations Updated");
-                currentResultPose.ifPresent(
-                    estimate -> {
-                        visionPose2d = estimate.estimatedPose.toPose2d();
-                    }
-                );
+                if (currentResultPose.isPresent()) {
+                    visionPose = currentResultPose.get().estimatedPose;
+                    System.out.println("Pose was set");
+                }
             }
-            visionPosePublisher.accept(visionPose2d);
+            visionPosePublisher.accept(visionPose);
         }
     }
 
