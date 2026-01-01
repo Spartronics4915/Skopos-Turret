@@ -46,18 +46,18 @@ public class VisionSubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-        if (!camera.getAllUnreadResults().isEmpty()) {
             results = camera.getAllUnreadResults();
             for (PhotonPipelineResult currentResult : results) {
-                currentResultPose = estimator.update(currentResult);
-                updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
-                if (currentResultPose.isPresent()) {
-                    visionPose = currentResultPose.get().estimatedPose;
-                    System.out.println("Pose was set");
+                if (currentResult.hasTargets()) {
+                    currentResultPose = estimator.update(currentResult);
+                    updateEstimationStdDevs(currentResultPose, currentResult.getTargets());
+                    if (currentResultPose.isPresent()) {
+                        visionPose = currentResultPose.get().estimatedPose;
+                        System.out.println("Pose was set");
+                    }
+                    visionPosePublisher.accept(visionPose);
                 }
             }
-            visionPosePublisher.accept(visionPose);
-        }
     }
 
     private void updateEstimationStdDevs(Optional<EstimatedRobotPose> estimatedPose, List<PhotonTrackedTarget> targets) {
