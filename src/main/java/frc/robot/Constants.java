@@ -3,6 +3,13 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.RadiansPerSecond;
 
+import java.util.List;
+import java.util.Map;
+
+import org.photonvision.PhotonCamera;
+import org.photonvision.PhotonPoseEstimator.PoseStrategy;
+import org.photonvision.simulation.SimCameraProperties;
+
 import com.ctre.phoenix6.configs.FeedbackConfigs;
 import com.ctre.phoenix6.configs.MotionMagicConfigs;
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -14,6 +21,8 @@ import com.revrobotics.spark.config.SparkBaseConfig;
 import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkMaxConfig;
 
+import edu.wpi.first.apriltag.AprilTagFieldLayout;
+import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -198,11 +207,59 @@ public final class Constants {
     }
 
     public static final class VisionConstants {
-        public static final Transform3d ROBOT_TO_CAMERA = new Transform3d(
-            new Translation3d(0, 0, 0),
-            new Rotation3d(0, 0, 0)
+        public static final Transform3d ROBOT_TO_CAMERA_TAU = new Transform3d(
+            new Translation3d(0, 0.028575, 0.576331),
+            new Rotation3d(
+                Rotation2d.fromDegrees(0).getRadians(), 
+                Rotation2d.fromDegrees(-15).getRadians(), 
+                Rotation2d.fromDegrees(0).getRadians()
+            )
         );
-        public static final Matrix<N3, N1> SINGLE_TAG_STD_DEVS = VecBuilder.fill(0, 0, 0);
-        public static final Matrix<N3, N1> MULTI_TAG_STD_DEVS = VecBuilder.fill(0, 0, 0);
+
+        public static final Transform3d ROBOT_TO_CAMERA_ETA = new Transform3d(
+            new Translation3d(0.180, -0.353, 0.092079),
+            new Rotation3d(
+                Rotation2d.fromDegrees(0).getRadians(), 
+                Rotation2d.fromDegrees(0).getRadians(), 
+                Rotation2d.fromDegrees(0).getRadians()
+            )
+        );
+    
+        public static final List<CameraConfig> cameraConfigs = List.of(
+            new CameraConfig(
+                "Tau", 
+                ROBOT_TO_CAMERA_TAU, 
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
+                AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField)),
+            new CameraConfig(
+                "Eta",  
+                ROBOT_TO_CAMERA_ETA, 
+                PoseStrategy.MULTI_TAG_PNP_ON_COPROCESSOR, 
+                AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField))
+        );
+
+        public static final SimCameraProperties simCameraProperties = new SimCameraProperties();
+            static {
+                simCameraProperties.setCalibration(1280, 900, Rotation2d.fromDegrees(100));
+                simCameraProperties.setCalibError(0.12, 0.04);
+                simCameraProperties.setFPS(60);
+                simCameraProperties.setAvgLatencyMs(15);
+                simCameraProperties.setLatencyStdDevMs(5);
+            }
+
+        public enum VisionState {
+            GLOBAL(),
+            LOCAL()
+        }
+
+        public static final Matrix<N3, N1> baseStdDevs = VecBuilder.fill(0, 0, 0);
+        public static final AprilTagFieldLayout APRIL_TAG_FIELD_LAYOUT = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+
+        public record CameraConfig(
+            String name,
+            Transform3d robotToCamera,
+            PoseStrategy strategy,
+            AprilTagFieldLayout apriltagLayout
+        ) {}
     }
 }   

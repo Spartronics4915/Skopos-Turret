@@ -5,10 +5,13 @@ import java.io.IOException;
 import java.util.function.Supplier;
 
 import edu.wpi.first.math.MathUtil;
+import edu.wpi.first.math.Matrix;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.numbers.N1;
+import edu.wpi.first.math.numbers.N3;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.networktables.StructPublisher;
 import edu.wpi.first.wpilibj.Filesystem;
@@ -26,6 +29,7 @@ import swervelib.telemetry.SwerveDriveTelemetry.TelemetryVerbosity;
 
 public class SwerveSubsystem extends SubsystemBase {
     public final SwerveDrive swerveDrive;
+    public static Pose2d swervePose;
     private final File directory = new File(Filesystem.getDeployDirectory(), "swerve/test-chassis");
 
     StructPublisher<Pose2d> posePublisher = NetworkTableInstance.getDefault().getStructTopic("Pose", Pose2d.struct).publish();
@@ -34,7 +38,7 @@ public class SwerveSubsystem extends SubsystemBase {
         try {
             swerveDrive = new SwerveParser(directory).createSwerveDrive(
                 MAX_SPEED,
-                new Pose2d(new Translation2d(Meter.of(2), Meter.of(5)),
+                new Pose2d(new Translation2d(Meter.of(5), Meter.of(3)),
                 Rotation2d.fromDegrees(0))
             );
         } catch (IOException e) {
@@ -58,6 +62,14 @@ public class SwerveSubsystem extends SubsystemBase {
 
     public Pose2d getPose() {
         return swerveDrive.getPose();
+    }
+
+    public Pose2d getPastVisionPose(double timestamp) {
+        return swerveDrive.swerveDrivePoseEstimator.sampleAt(timestamp).get();
+    }
+
+    public void addVisionMeasurement(Pose2d pose, double timestamp, Matrix<N3, N1> visionMeasurementStdDevs) {
+        swerveDrive.addVisionMeasurement(pose, timestamp, visionMeasurementStdDevs);
     }
 
     public double getSpeed() {

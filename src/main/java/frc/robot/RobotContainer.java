@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import frc.robot.commands.DriveCommand;
 import frc.robot.subsystems.drive.SwerveSubsystem;
+import frc.robot.subsystems.sim.SimulationSubsystem;
 import frc.robot.subsystems.superstructure.HoodSubsystem;
 import frc.robot.subsystems.superstructure.IntakeSubsystem;
 import frc.robot.subsystems.superstructure.ShooterSubsystem;
@@ -25,7 +26,12 @@ public class RobotContainer {
     public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
     public final TurretSubsystem turretSubsystem = new TurretSubsystem();
     public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
-    public final VisionSubsystem visionSubsystem = new VisionSubsystem();
+    public final VisionSubsystem visionSubsystem = new VisionSubsystem(
+        swerveSubsystem::addVisionMeasurement, 
+        () -> swerveSubsystem.getPose(), 
+        () -> swerveSubsystem.getPastVisionPose(VisionSubsystem.visionPoseTimestamp)
+    );
+    public final SimulationSubsystem simulationSubsystem = new SimulationSubsystem();
     
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
@@ -97,6 +103,22 @@ public class RobotContainer {
             })
         );
 
+        driverController.rightTrigger(0.01).whileTrue(
+            Commands.run(() -> {
+                double triggerRaw = operatorController.getRightTriggerAxis();
+                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+                shooterSubsystem.setSetpoint(trigger * 80);
+                simulationSubsystem.startFlightSimulation(
+                    shooterSubsystem.getVelocity(), 
+                    hoodSubsystem.getPosition().getRadians(), 
+                    swerveSubsystem.getPose(),
+                    swerveSubsystem.getFieldVelocity()
+                );
+            }).finallyDo(
+                () -> shooterSubsystem.setSetpoint(0)
+            )
+        );
+
         //#endregion
 
         //#region Operator Controller Bindings
@@ -140,6 +162,12 @@ public class RobotContainer {
                 double triggerRaw = operatorController.getRightTriggerAxis();
                 double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
                 shooterSubsystem.setSetpoint(trigger * 80);
+                simulationSubsystem.startFlightSimulation(
+                    shooterSubsystem.getVelocity(), 
+                    hoodSubsystem.getPosition().getRadians(), 
+                    swerveSubsystem.getPose(),
+                    swerveSubsystem.getFieldVelocity()
+                );
             }).finallyDo(
                 () -> shooterSubsystem.setSetpoint(0)
             )
