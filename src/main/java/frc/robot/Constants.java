@@ -262,4 +262,16 @@ public final class Constants {
             AprilTagFieldLayout apriltagLayout
         ) {}
     }
+    public static final class IntakeTwoConstants {
+    
+        public static final int INTAKE_TWO_MOTOR_ID = 17;
+        public static final boolean INTAKE_MOTOR_INVERTED = false;
+        public static final int INTAKE_MOTOR_SMART_LIMIT = 15;
+        public static final int INTAKE_MOTOR_SECONDARY_LIMIT = 30;
+
+        public static final double INTAKE_MOTOR_SET_SPEED = 0.4;
+
+        
+    }
+
 }   

@@ -11,6 +11,7 @@ import frc.robot.subsystems.drive.SwerveSubsystem;
 import frc.robot.subsystems.sim.SimulationSubsystem;
 import frc.robot.subsystems.superstructure.HoodSubsystem;
 import frc.robot.subsystems.superstructure.IntakeSubsystem;
+import frc.robot.subsystems.superstructure.IntakeTwoSubsystem;
 import frc.robot.subsystems.superstructure.ShooterSubsystem;
 import frc.robot.subsystems.superstructure.TurretSubsystem;
 import frc.robot.subsystems.vision.VisionSubsystem;
@@ -19,20 +20,24 @@ import static frc.robot.Constants.SwerveConstants.*;
 import static frc.robot.Constants.IO.*;
 
 public class RobotContainer {
-
-    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
-    public final HoodSubsystem hoodSubsystem = new HoodSubsystem();
-    public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
-    public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
-    public final TurretSubsystem turretSubsystem = new TurretSubsystem();
-    public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
-    public final VisionSubsystem visionSubsystem = new VisionSubsystem(
-        swerveSubsystem::addVisionMeasurement, 
-        () -> swerveSubsystem.getPose(), 
-        () -> swerveSubsystem.getPastVisionPose(VisionSubsystem.visionPoseTimestamp)
-    );
-    public final SimulationSubsystem simulationSubsystem = new SimulationSubsystem();
     
+    public final SwerveSubsystem swerveSubsystem = new SwerveSubsystem();
+    @SuppressWarnings("unused")
+    //A lot of these are commented out because the turret got removed from the robot.
+
+    // public final HoodSubsystem hoodSubsystem = new HoodSubsystem();
+    // public final ShooterSubsystem shooterSubsystem = new ShooterSubsystem();
+    // public final IntakeSubsystem intakeSubsystem = new IntakeSubsystem();
+    // public final TurretSubsystem turretSubsystem = new TurretSubsystem();
+    // public final Superstructure superstructure = new Superstructure(swerveSubsystem, hoodSubsystem, shooterSubsystem, intakeSubsystem, turretSubsystem);
+    // public final VisionSubsystem visionSubsystem = new VisionSubsystem(
+    //     swerveSubsystem::addVisionMeasurement, 
+    //     () -> swerveSubsystem.getPose(), 
+    //     () -> swerveSubsystem.getPastVisionPose(VisionSubsystem.visionPoseTimestamp)
+    // );
+    public final SimulationSubsystem simulationSubsystem = new SimulationSubsystem();
+    public final IntakeTwoSubsystem intakeTwoSubsystem = new IntakeTwoSubsystem();
+
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
     private final CommandXboxController operatorController = new CommandXboxController(OPERATOR_CONTROLLER_PORT);
     public DriveCommand driveCommand = new DriveCommand(driverController, swerveSubsystem);
@@ -40,11 +45,11 @@ public class RobotContainer {
     public RobotContainer() {
         configureBindings();
 
-        ModeSwitchHandler.EnableModeSwitchHandler(
-            hoodSubsystem,
-            shooterSubsystem,
-            intakeSubsystem
-        );
+        // ModeSwitchHandler.EnableModeSwitchHandler(
+        //     hoodSubsystem,
+        //     shooterSubsystem,
+        //     intakeSubsystem
+        // );
     }
 
     private double applyResponseCurve(double x) {
@@ -97,91 +102,91 @@ public class RobotContainer {
             })
         );
 
-        driverController.x().whileTrue(
+        driverController.x().onTrue(
             Commands.runOnce(() -> {
-
+                intakeTwoSubsystem.toggleIntake();
             })
         );
 
-        driverController.rightTrigger(0.01).whileTrue(
-            Commands.run(() -> {
-                double triggerRaw = operatorController.getRightTriggerAxis();
-                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
-                shooterSubsystem.setSetpoint(trigger * 80);
-                simulationSubsystem.startFlightSimulation(
-                    shooterSubsystem.getVelocity(), 
-                    hoodSubsystem.getPosition().getRadians(), 
-                    swerveSubsystem.getPose(),
-                    swerveSubsystem.getFieldVelocity()
-                );
-            }).finallyDo(
-                () -> shooterSubsystem.setSetpoint(0)
-            )
-        );
+        // driverController.rightTrigger(0.01).whileTrue(
+        //     Commands.run(() -> {
+        //         double triggerRaw = operatorController.getRightTriggerAxis();
+        //         double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+        //         shooterSubsystem.setSetpoint(trigger * 80);
+        //         simulationSubsystem.startFlightSimulation(
+        //             shooterSubsystem.getVelocity(), 
+        //             hoodSubsystem.getPosition().getRadians(), 
+        //             swerveSubsystem.getPose(),
+        //             swerveSubsystem.getFieldVelocity()
+        //         );
+        //     }).finallyDo(
+        //         () -> shooterSubsystem.setSetpoint(0)
+        //     )
+        // );
 
         //#endregion
 
         //#region Operator Controller Bindings
 
-        operatorController.povUp().whileTrue(
-            Commands.run(() ->
-                hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(-HOOD_STEP))
-            )
-        );
+        // operatorController.povUp().whileTrue(
+        //     Commands.run(() ->
+        //         hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(-HOOD_STEP))
+        //     )
+        // );
 
-        operatorController.povDown().whileTrue(
-            Commands.run(() ->
-                hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(HOOD_STEP))
-            )
-        );
+        // operatorController.povDown().whileTrue(
+        //     Commands.run(() ->
+        //         hoodSubsystem.incrementAngle(Rotation2d.fromDegrees(HOOD_STEP))
+        //     )
+        // );
 
-        operatorController.povLeft().whileTrue(
-            Commands.run(() ->
-                turretSubsystem.incrementAngle(Rotation2d.fromDegrees(-TURRET_STEP))
-            )
-        );
+        // operatorController.povLeft().whileTrue(
+        //     Commands.run(() ->
+        //         turretSubsystem.incrementAngle(Rotation2d.fromDegrees(-TURRET_STEP))
+        //     )
+        // );
 
-        operatorController.povRight().whileTrue(
-            Commands.run(() ->
-                turretSubsystem.incrementAngle(Rotation2d.fromDegrees(TURRET_STEP))
-            )
-        );
+        // operatorController.povRight().whileTrue(
+        //     Commands.run(() ->
+        //         turretSubsystem.incrementAngle(Rotation2d.fromDegrees(TURRET_STEP))
+        //     )
+        // );
 
-        operatorController.leftTrigger(0.01).whileTrue(
-            Commands.run(() -> {
-                double triggerRaw = operatorController.getLeftTriggerAxis();
-                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
-                intakeSubsystem.setSpeed(trigger * 10);
-            }).finallyDo(
-                () -> intakeSubsystem.setSpeed(0)
-            )
-        );
+        // operatorController.leftTrigger(0.01).whileTrue(
+        //     Commands.run(() -> {
+        //         double triggerRaw = operatorController.getLeftTriggerAxis();
+        //         double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+        //         intakeSubsystem.setSpeed(trigger * 10);
+        //     }).finallyDo(
+        //         () -> intakeSubsystem.setSpeed(0)
+        //     )
+        // );
 
-        operatorController.rightTrigger(0.01).whileTrue(
-            Commands.run(() -> {
-                double triggerRaw = operatorController.getRightTriggerAxis();
-                double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
-                shooterSubsystem.setSetpoint(trigger * 80);
-                simulationSubsystem.startFlightSimulation(
-                    shooterSubsystem.getVelocity(), 
-                    hoodSubsystem.getPosition().getRadians(), 
-                    swerveSubsystem.getPose(),
-                    swerveSubsystem.getFieldVelocity()
-                );
-            }).finallyDo(
-                () -> shooterSubsystem.setSetpoint(0)
-            )
-        );
+        // operatorController.rightTrigger(0.01).whileTrue(
+        //     Commands.run(() -> {
+        //         double triggerRaw = operatorController.getRightTriggerAxis();
+        //         double trigger = applyResponseCurve(MathUtil.applyDeadband(triggerRaw, TRIGGER_DEADBAND));
+        //         shooterSubsystem.setSetpoint(trigger * 80);
+        //         simulationSubsystem.startFlightSimulation(
+        //             shooterSubsystem.getVelocity(), 
+        //             hoodSubsystem.getPosition().getRadians(), 
+        //             swerveSubsystem.getPose(),
+        //             swerveSubsystem.getFieldVelocity()
+        //         );
+        //     }).finallyDo(
+        //         () -> shooterSubsystem.setSetpoint(0)
+        //     )
+        // );
 
-        operatorController.leftBumper().onTrue(
-            superstructure.intake()
-        );
+        // operatorController.leftBumper().onTrue(
+        //     superstructure.intake()
+        // );
 
         //#endregion
 
-        SmartDashboard.putData("Reset Dynamics", Commands.sequence(
-            hoodSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0)),
-            turretSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0))
-        ));
+        // SmartDashboard.putData("Reset Dynamics", Commands.sequence(
+        //     hoodSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0)),
+        //     turretSubsystem.setSetpointCommand(Rotation2d.fromDegrees(0))
+        // ));
     }
 }
