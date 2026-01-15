@@ -8,6 +8,7 @@ import com.revrobotics.spark.config.SparkBaseConfig.IdleMode;
 import com.revrobotics.spark.config.SparkFlexConfig;
 
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.Commands;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
 
@@ -29,14 +30,13 @@ public class IntakeTwoSubsystem extends SubsystemBase{
 
     }
 
-    public Command toggleIntake() {
-        if( this.intakeActive == false){
+    public void toggleIntake() {
+        if(intakeActive == false){
             intakeActive = true;
-            return this.runOnce(()-> intakeMotor.set(Constants.IntakeTwoConstants.INTAKE_MOTOR_SET_SPEED));
+            intakeMotor.set(Constants.IntakeTwoConstants.INTAKE_MOTOR_SET_SPEED);
         } else {
             intakeActive = false;
-            return this.runOnce(()-> intakeMotor.set(0.0));   
+            intakeMotor.set(0.0);   
         }
-        
     }
 }

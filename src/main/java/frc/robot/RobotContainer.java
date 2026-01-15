@@ -35,7 +35,7 @@ public class RobotContainer {
     //     () -> swerveSubsystem.getPose(), 
     //     () -> swerveSubsystem.getPastVisionPose(VisionSubsystem.visionPoseTimestamp)
     // );
-    public final SimulationSubsystem simulationSubsystem = new SimulationSubsystem();
+    // public final SimulationSubsystem simulationSubsystem = new SimulationSubsystem();
     public final IntakeTwoSubsystem intakeTwoSubsystem = new IntakeTwoSubsystem();
 
     private final CommandXboxController driverController = new CommandXboxController(DRIVE_CONTROLLER_PORT);
