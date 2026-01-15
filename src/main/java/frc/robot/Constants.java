@@ -180,7 +180,7 @@ public final class Constants {
         public static final double WHEEL_BASE = 22.475 / 12;
         public static final double CHASSIS_RADIUS = Math.hypot(TRACK_WIDTH / 2, WHEEL_BASE / 2);
 
-        public static final double MAX_SPEED = Units.feetToMeters(24);
+        public static final double MAX_SPEED = Units.feetToMeters(12);
         public static final AngularVelocity MAX_ANGULAR_SPEED = RadiansPerSecond.of(MAX_SPEED * Math.PI / CHASSIS_RADIUS);
 
         public static Rotation2d TELEOP_HEADING_OFFSET = Rotation2d.fromDegrees(0.0);
@@ -266,12 +266,17 @@ public final class Constants {
     
         public static final int INTAKE_TWO_MOTOR_ID = 17;
         public static final boolean INTAKE_MOTOR_INVERTED = false;
+
+        public static final double SUPPLY_LIMIT = 30.0;
+        public static final double LOWER_LIMIT = 0.0;
+        public static final double TALON_LOWER_TIME = 1.0;
+       
+
+        public static final double INTAKE_MOTOR_SET_SPEED = 0.3;
+
+        //Old Spark max limits:
         public static final int INTAKE_MOTOR_SMART_LIMIT = 15;
         public static final int INTAKE_MOTOR_SECONDARY_LIMIT = 30;
-
-        public static final double INTAKE_MOTOR_SET_SPEED = 0.4;
-
-        
     }
 
 }   
